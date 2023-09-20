@@ -1,0 +1,11 @@
+version: '3.0'
+
+services:
+  metrics-generator:
+    image: node:latest
+    command: ['node', '/app/index.js']
+    ports:
+      - 5000:5000
+    volumes:
+      - ./dist:/app
+      - ./node_modules:/node_modules

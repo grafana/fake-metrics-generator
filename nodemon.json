@@ -1,0 +1,3 @@
+{
+  "ignore": ["dist/config/existing-maps.json"]
+}
