@@ -1,0 +1,123 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: 'Release level'
+        required: true
+        default: 'prerelease'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - prerelease
+jobs:
+  bump-and-build-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version-tag: v${{ steps.bump-version.outputs.version }}
+      upload-folder: ${{ steps.metadata.outputs.upload-folder }}
+    steps:
+      - uses: tibdex/github-app-token@v1
+        id: get_installation_token
+        with:
+          app_id: ${{ secrets.DB_FE_GITHUB_APP_ID }}
+          installation_id: ${{ secrets.DB_FE_GITHUB_APP_INSTALLATION_ID }}
+          private_key: ${{ secrets.DB_FE_GITHUB_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v4
+        with:
+          ref: 'main'
+          token: ${{ steps.get_installation_token.outputs.token }}
+          fetch-depth: 0
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/hydrogen
+      - name: Install dependencies
+        run: yarn install --immutable;
+      - name: Bump version
+        id: bump-version
+        run: |
+          # Workaround for bug https://github.com/yarnpkg/berry/issues/4328
+          echo "$(jq 'del(.stableVersion)' package.json)" > package.json
+
+          yarn version $LEVEL
+
+          export BUMPED_VERSION=$(cat package.json | jq -r '.version')
+
+          # We want to stage files now so we don't have to worry about adding extra files later
+          git add .
+
+          echo "version=${BUMPED_VERSION}" >> $GITHUB_OUTPUT
+        env:
+          LEVEL: ${{ inputs.level }}
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        run: yarn test:ci
+      - name: Build
+        run: |
+          cp src/config/default/config.json src/config/config.json
+          yarn build
+      - name: Metadata
+        id: metadata
+        run: |
+          echo "archive=fake-metrics-generator-${{ steps.bump-version.outputs.version }}.zip" >> $GITHUB_OUTPUT
+          echo "upload-folder=__to-upload__" >> $GITHUB_OUTPUT
+      - name: Package
+        id: package-artifacts
+        run: |
+          mkdir ${{ steps.metadata.outputs.upload-folder }}
+          zip -r ${{ steps.metadata.outputs.upload-folder }}/${{ steps.metadata.outputs.archive }} ./dist docker-compose.yml
+          md5sum ${{ steps.metadata.outputs.upload-folder }}/${{ steps.metadata.outputs.archive }} > ${{ steps.metadata.outputs.upload-folder }}/${{ steps.metadata.outputs.archive }}.md5
+      - name: Commit version bump
+        id: commit-version-bump
+        uses: grafana/github-api-commit-action@v0
+        with:
+          token: ${{ steps.get_installation_token.outputs.token }}
+          commit-message: 'chore(version): bump to version [${{ steps.bump-version.outputs.version }}] (${{ inputs.level }}) [BOT]'
+      - name: Create tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          commit_sha: ${{ steps.commit-version-bump.outputs.commit-sha }}
+          github_token: ${{ steps.get_installation_token.outputs.token }}
+          message: "chore(tag): tag version ${{ steps.bump-version.outputs.version }} [BOT]"
+          tag: v${{ steps.bump-version.outputs.version }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: upload-dir
+          path: ${{ steps.metadata.outputs.upload-folder }}
+  release-and-upload:
+    runs-on: ubuntu-latest
+    needs: [ 'bump-and-build-version' ]
+    steps:
+      - uses: tibdex/github-app-token@v1
+        id: get_installation_token
+        with:
+          app_id: ${{ secrets.DB_FE_GITHUB_APP_ID }}
+          installation_id: ${{ secrets.DB_FE_GITHUB_APP_INSTALLATION_ID }}
+          private_key: ${{ secrets.DB_FE_GITHUB_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.bump-and-build-version.outputs.version-tag }}
+          token: ${{ steps.get_installation_token.outputs.token }}
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: upload-dir
+          path: ${{ needs.bump-and-build-version.outputs.upload-folder }}
+
+      - name: Create Github release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: ${{ inputs.level == 'prerelease' }}
+          generate_release_notes: true
+          files: |
+            ./${{ needs.bump-and-build-version.outputs.upload-folder }}/**/*.zip?(.md5)
+          tag_name: ${{ needs.bump-and-build-version.outputs.version-tag }}

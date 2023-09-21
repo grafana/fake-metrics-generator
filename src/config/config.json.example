@@ -1,5 +1,5 @@
 {
-    "collectDefaultMetrics": false,
+    "collectDefaultMetrics": true,
     "labels": {
         "maxPerMetric": 10,
         "minPerMetric": 2,

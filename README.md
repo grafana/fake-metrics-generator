@@ -4,7 +4,7 @@ This project generates fake metrics that can be scraped and pushed to a promethe
 
 ![screenshot](./docs/img/fake-metrics.png)
 
-## Running locally
+## Running from checkout
 
 1. Install dependencies `yarn`
 2. Copy src/config/config.json.example to src/config/config.json and edit it to your liking. See [configuration](#configuration) for more details.
@@ -19,9 +19,18 @@ yarn dev
 yarn start
 ```
 
-## Running in environment
+## Running from release
 
-TODO: Fill in details
+1. Download the latest release from [here](https://github.com/grafana/fake-metrics-generator/releases)
+2. Extract the archive
+3. Run the server
+
+The release archive includes a precompiled bundle that only needs nodejs to run. It also includes a `docker-compose.yml`
+file which will run the server in a docker container exposing port `5000`
+
+## Access the metrics
+
+After you have the server running all you need to do is point your browser or scraper at `localhost:5000/metrics`
 
 ## Configuration
 

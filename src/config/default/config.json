@@ -1,0 +1,14 @@
+{
+  "collectDefaultMetrics": true,
+  "labels": {
+    "maxPerMetric": 10,
+    "minPerMetric": 2,
+    "valueVariations": 4
+  },
+  "metrics": {
+    "quantity": 100,
+    "maxTimeSeries": 25,
+    "minTimeSeries": 5
+  },
+  "persistBetweenRuns": true
+}

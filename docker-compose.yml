@@ -4,6 +4,7 @@ services:
   metrics-generator:
     image: node:latest
     command: ['node', '/app/main.node.js']
+    restart: unless-stopped
     ports:
       - 5000:5000
     volumes:

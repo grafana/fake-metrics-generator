@@ -1,25 +1,146 @@
 {
-  "extends": ["@grafana/eslint-config",
+  "extends": [
+    "prettier",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:import/typescript"],
+    "plugin:import/typescript"
+  ],
   "overrides": [
     {
-      "files": ["*.test.tsx"],
+      "files": [
+        "*.test.tsx"
+      ],
       "env": {
         "jest": true
       },
-      "plugins": ["jest"],
-      "extends": ["plugin:jest/recommended"]
+      "plugins": [
+        "jest"
+      ],
+      "extends": [
+        "plugin:jest/recommended"
+      ]
     }
   ],
-  "plugins": ["import", "simple-import-sort", "jest"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "jsdoc",
+    "@typescript-eslint",
+    "import",
+    "simple-import-sort",
+    "jest"
+  ],
   "root": true,
   "rules": {
+    "curly": "error",
+    "dot-notation": "off",
+    "eol-last": "error",
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "guard-for-in": "off",
+    "jsdoc/check-alignment": "error",
+    "new-parens": "error",
+    "no-array-constructor": "error",
+    "no-bitwise": "off",
+    "no-caller": "error",
+    "no-cond-assign": "error",
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "error",
+          "log",
+          "warn",
+          "info"
+        ]
+      }
+    ],
+    "no-debugger": "error",
+    "no-empty": "off",
+    "no-eval": "error",
+    "no-fallthrough": "off",
+    "no-new-wrappers": "error",
+    "no-redeclare": "error",
+    "no-restricted-imports": [
+      "error",
+      "moment"
+    ],
+    "no-shadow": "off",
+    "no-unused-expressions": "off",
+    "no-unused-labels": "error",
+    "no-var": "error",
+    "radix": "error",
+    "sort-keys": "off",
+    "spaced-comment": [
+      "off",
+      "always"
+    ],
+    "use-isnan": "error",
+    "no-duplicate-imports": "error",
+    "@typescript-eslint/no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true,
+        "allowTernary": true
+      }
+    ],
+    "@typescript-eslint/array-type": [
+      "error",
+      {
+        "default": "array-simple"
+      }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": [
+          "PascalCase"
+        ],
+        "custom": {
+          "regex": "^I[A-Z]",
+          "match": false
+        }
+      }
+    ],
+    "@typescript-eslint/consistent-type-assertions": "error",
+    "@typescript-eslint/no-inferrable-types": "error",
+    "@typescript-eslint/no-namespace": [
+      "error",
+      {
+        "allowDeclarations": false
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/triple-slash-reference": "error",
+    "@typescript-eslint/type-annotation-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": false,
+        "overrides": {
+          "arrow": {
+            "after": true,
+            "before": true
+          }
+        }
+      }
+    ],
     // BEG: import sorting
-    "sort-imports": "off", // disabled in favor of simple-import-sort see https://github.com/lydell/eslint-plugin-simple-import-sort/#usage
+    "sort-imports": "off",
+    // disabled in favor of simple-import-sort see https://github.com/lydell/eslint-plugin-simple-import-sort/#usage
     "import/first": "error",
-    "import/order": "off", // disabled in favor of simple-import-sort see https://github.com/lydell/eslint-plugin-simple-import-sort/#usage
+    "import/order": "off",
+    // disabled in favor of simple-import-sort see https://github.com/lydell/eslint-plugin-simple-import-sort/#usage
     "import/no-duplicates": "error",
     "import/no-unresolved": "off",
     "simple-import-sort/imports": [
@@ -27,16 +148,31 @@
       {
         "groups": [
           // Side effect imports. Needs to be before @grafana for jest tests to work.
-          ["^\\u0000"],
+          [
+            "^\\u0000"
+          ],
           // Internal packages @grafana as a separate group.
-          ["^@grafana"],
-          ["^(@|@common)(/.*|$)"],
+          [
+            "^@grafana"
+          ],
+          [
+            "^(@|@common)(/.*|$)"
+          ],
           // Parent imports. Put `..` last.
-          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$"
+          ],
           // Other relative imports. Put same-folder imports and `.` last.
-          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          [
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
           // Style imports.
-          ["^.+\\.s?css$"]
+          [
+            "^.+\\.s?css$"
+          ]
         ]
       }
     ],

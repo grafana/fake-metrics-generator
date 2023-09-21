@@ -42,7 +42,7 @@ const config = async (env: any): Promise<Configuration> => ({
 
   plugins: [
     new CopyWebpackPlugin({
-      patterns: [{ from: 'config/*.json', to: '.' }],
+      patterns: [{ from: 'config/**/*.json', to: '.' }],
     }),
     new ForkTsCheckerWebpackPlugin({
       issue: {

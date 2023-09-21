@@ -46,3 +46,7 @@ node_modules/
 
 src/config/config.json
 src/config/existing-maps.json
+
+.eslintcache
+
+__to-upload__
