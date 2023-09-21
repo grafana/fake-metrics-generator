@@ -1,0 +1,46 @@
+{
+  "extends": ["@grafana/eslint-config",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"],
+  "overrides": [
+    {
+      "files": ["*.test.tsx"],
+      "env": {
+        "jest": true
+      },
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/recommended"]
+    }
+  ],
+  "plugins": ["import", "simple-import-sort", "jest"],
+  "root": true,
+  "rules": {
+    // BEG: import sorting
+    "sort-imports": "off", // disabled in favor of simple-import-sort see https://github.com/lydell/eslint-plugin-simple-import-sort/#usage
+    "import/first": "error",
+    "import/order": "off", // disabled in favor of simple-import-sort see https://github.com/lydell/eslint-plugin-simple-import-sort/#usage
+    "import/no-duplicates": "error",
+    "import/no-unresolved": "off",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // Side effect imports. Needs to be before @grafana for jest tests to work.
+          ["^\\u0000"],
+          // Internal packages @grafana as a separate group.
+          ["^@grafana"],
+          ["^(@|@common)(/.*|$)"],
+          // Parent imports. Put `..` last.
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          // Other relative imports. Put same-folder imports and `.` last.
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          // Style imports.
+          ["^.+\\.s?css$"]
+        ]
+      }
+    ],
+    "simple-import-sort/exports": "off"
+    // END: import sorting
+  }
+}
