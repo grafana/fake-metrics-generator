@@ -12,10 +12,10 @@ const register = new prometheus.Registry();
 let config: Config;
 
 try {
-  config = require('./config/config.json');
+  config = JSON.parse(fs.readFileSync(`${__dirname}/config/config.json`, { encoding: 'utf-8' }));
 } catch (e) {
   console.log('Config.json not found, using default config');
-  config = require('./config/default/config.json');
+  config = JSON.parse(fs.readFileSync(`${__dirname}/config/default/config.json`, { encoding: 'utf-8' }));
 }
 
 if (config.collectDefaultMetrics) {
