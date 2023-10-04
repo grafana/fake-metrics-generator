@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "metrics-generator-backend",
-  "version": "0.1.1-0",
+  "version": "0.1.1-1",
   "license": "MIT",
   "author": "abannachGrafana",
   "main": "index.js",
@@ -58,5 +58,5 @@
     "webpack-cli": "^5.1.4"
   },
   "packageManager": "yarn@3.6.3",
-  "stableVersion": "0.1.0"
+  "stableVersion": "0.1.1-0"
 }
