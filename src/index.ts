@@ -91,6 +91,10 @@ app.get('/metrics', async (req, res) => {
   res.send(await register.metrics());
 });
 
+app.get('/config', (req, res) => {
+  res.json(config);
+});
+
 app.get('/', (req, res) => {
   res.send('Hello, Express!');
 });
