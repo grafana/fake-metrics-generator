@@ -1,7 +1,7 @@
 import { Config, MapsJson } from './types';
 
 import { faker } from '@faker-js/faker';
-import { some as _some } from 'lodash';
+import { has as _has, some as _some } from 'lodash';
 
 export const existingDataMatchesConfig = (existingMaps: MapsJson | undefined, config: Config) => {
   if (existingMaps) {
@@ -19,6 +19,30 @@ export const existingDataMatchesConfig = (existingMaps: MapsJson | undefined, co
     const numLabels = existingMaps.labels.length === config.labels.maxPerMetric;
     const numLabelValues = existingMaps.labels[0][1].length === config.labels.valueVariations;
 
+    let firstMetricPrefix = '';
+
+    const splitMetric = existingMaps.metrics[0][0].split('__');
+
+    if (splitMetric.length > 1) {
+      firstMetricPrefix = splitMetric[0];
+    }
+
+    const metricPrefixes =
+      (_has(config.metrics, 'prefix') && firstMetricPrefix === config.metrics.prefix) ||
+      (!_has(config.metrics, 'prefix') && firstMetricPrefix === 'fake');
+
+    let firstLabelPrefix = '';
+
+    const splitLabel = existingMaps.labels[0][0].split('__');
+
+    if (splitLabel.length > 1) {
+      firstLabelPrefix = splitLabel[0];
+    }
+
+    const labelPrefixes =
+      (_has(config.labels, 'prefix') && firstLabelPrefix === config.labels.prefix) ||
+      (!_has(config.labels, 'prefix') && firstLabelPrefix === 'fake');
+
     return (
       // number of metrics matches
       numMetrics &&
@@ -29,7 +53,11 @@ export const existingDataMatchesConfig = (existingMaps: MapsJson | undefined, co
       // number of labels match
       numLabels &&
       // number of values per labels match
-      numLabelValues
+      numLabelValues &&
+      // metric names have correct prefix
+      metricPrefixes &&
+      // label names have correct prefix
+      labelPrefixes
     );
   }
   return false;
@@ -38,13 +66,30 @@ export const existingDataMatchesConfig = (existingMaps: MapsJson | undefined, co
 export const generateLabels = (config: Config): Map<string, string[]> => {
   const { labels: labelConfig } = config;
 
+  let prefix = 'fake';
+
+  if (_has(labelConfig, 'prefix')) {
+    if (labelConfig.prefix) {
+      prefix = labelConfig.prefix;
+    } else {
+      prefix = '';
+    }
+  }
+
+  if (prefix) {
+    // add a double underscore to indicate prefix
+    prefix += '__';
+  }
+
   const res = new Map<string, string[]>();
 
   while (res.size < labelConfig.maxPerMetric) {
-    const label = faker.company
-      .buzzPhrase()
-      .replace(/[^a-zA-Z0-9_]/g, '_')
-      .toLowerCase();
+    const label =
+      prefix +
+      faker.company
+        .buzzPhrase()
+        .replace(/[^a-zA-Z0-9_]/g, '_')
+        .toLowerCase();
     if (!res.has(label)) {
       const values: Set<string> = new Set<string>();
 
@@ -69,11 +114,28 @@ export const generateMetrics = (
   const { labels: labelConfig, metrics: metricsConfig } = config;
   const res: Map<string, Array<{ [k: string]: string }>> = new Map<string, Array<{ [k: string]: string }>>();
 
+  let prefix = 'fake';
+
+  if (_has(metricsConfig, 'prefix')) {
+    if (metricsConfig.prefix) {
+      prefix = metricsConfig.prefix;
+    } else {
+      prefix = '';
+    }
+  }
+
+  if (prefix) {
+    // add a double underscore to indicate prefix
+    prefix += '__';
+  }
+
   while (res.size < metricsConfig.quantity) {
-    const metricName = faker.company
-      .catchPhrase()
-      .replace(/[^a-zA-Z0-9_]/g, '_')
-      .toLowerCase();
+    const metricName =
+      prefix +
+      faker.company
+        .catchPhrase()
+        .replace(/[^a-zA-Z0-9_]/g, '_')
+        .toLowerCase();
     if (!res.has(metricName)) {
       const numTimeSeries = faker.number.int({
         min: metricsConfig.minTimeSeries,
