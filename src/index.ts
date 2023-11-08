@@ -111,11 +111,23 @@ app.get('/metrics', async (_, res) => {
 });
 
 app.get('/config', (_, res) => {
-  res.json(config);
+  res.header('Content-Type', 'application/json');
+  res.send(JSON.stringify(config, null, 2));
 });
 
 app.get('/', (_, res) => {
-  res.send('Hello, Express!');
+  res.send(
+    `
+<h1>Fake metrics generator</h1>
+<div>
+<h2>Links</h2>
+<ul>
+<li><a href="/metrics">/metrics</a> to see the generated metrics.</li>
+<li><a href="/config">/config</a> to see the current config</li>
+</ul>
+</div>
+`
+  );
 });
 
 app.listen(port, () => {
