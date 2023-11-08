@@ -7,9 +7,11 @@ This project generates fake metrics that can be scraped and pushed to a promethe
 ## Running from checkout
 
 1. Install dependencies `yarn`
-2. Copy src/config/config.json.example to src/config/config.json and edit it to your liking. See [configuration](#configuration) for more details.
-`cp src/config/config.json.example src/config/config.json`
+2. Copy src/config/config.json.example to src/config/config.json and edit it to your liking.
+   See [configuration](#configuration) for more details.
+   `cp src/config/config.json.example src/config/config.json`
 3. Run the server
+
 ```bash
 # 1. via docker compose
 yarn build & docker compose up -d
@@ -41,16 +43,21 @@ type Config = {
     collectDefaultMetrics: boolean; // Whether to include default metrics for prom-client
     labels: { // labels config
         prefix: string; // The prefix to add to all labels; Defaults to "fake", set to '' to disable
-        maxPerMetric: number; // The max number of labels that can be applied to a metric
-        minPerMetric: number; // The min number of labels that will be applied to a metric
+        perMetric: number | [number /*min*/, number /*max*/]; // The number of labels to generate per metric can be a range
+        qtyForValueRotation?: number; // A number of labels that will have their values rotated on a cron schedule
+        rotationCronSchedule?: string; // A cron schedule for rotating the values of labels defaults to every 6 hours
         valueVariations: number; // How many different values a label can have
     },
     metrics: { // metrics config
         prefix: string; // The prefix to add to all metrics; Defaults to "fake_", set to '' to disable
         quantity: number; // How many metrics to generate
-        maxTimeSeries: number; // The max number of time series per metric name
-        minTimeSeries: number; // The min number of time series per metric name
+        timeSeries: number | [number /*min*/, number /*max*/]; // The number of time series to generate per metric can be a range
     },
     persistBetweenRuns: boolean; // Whether to save the generated metrics and labels to a file to use on a future run
 }
 ```
+
+The configuration for `labels.qtyForValueRotation` and `labels.rotationCronSchedule` is intended to generate churn in your metric time
+series. This is useful when a service you depend on is expecting changes to label values. E.g. `pod`
+
+For help configuring a cron schedule you can use [crontab guru](https://crontab.guru/)

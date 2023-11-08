@@ -1,14 +1,12 @@
 {
     "collectDefaultMetrics": true,
     "labels": {
-        "maxPerMetric": 10,
-        "minPerMetric": 2,
-        "valueVariations": 4
+        "perMetric": [2, 10],
+        "valueVariations": 5
     },
     "metrics": {
-        "quantity": 100,
-        "maxTimeSeries": 25,
-        "minTimeSeries": 5
+        "quantity": 50,
+        "timeSeries": [5, 25]
     },
     "persistBetweenRuns": true
 }
