@@ -1,5 +1,5 @@
 {
-    "collectDefaultMetrics": false,
+    "collectDefaultMetrics": true,
     "labels": {
         "perMetric": [2, 10],
         "valueVariations": 5
