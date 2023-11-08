@@ -664,6 +664,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/luxon@npm:~3.3.0":
+  version: 3.3.4
+  resolution: "@types/luxon@npm:3.3.4"
+  checksum: aa4862bd62d748e7966f9a0ec76058e9d74397ee426c7d64f61c677d83de0303c303cc78515001833df3f4ad16c95f572b0e2ffaee6e55bc50b80857e8437f3a
+  languageName: node
+  linkType: hard
+
 "@types/mime@npm:*":
   version: 3.0.1
   resolution: "@types/mime@npm:3.0.1"
@@ -1912,6 +1919,16 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: a9a1503d4390d8b59ad86f4607de7870b39cad43d929813599a23714831e81c520bddf61bcdd1f8e30f05fd3a2b71ae8538e946eb2786dc65c2bbc520f692eff
+  languageName: node
+  linkType: hard
+
+"cron@npm:^3.1.6":
+  version: 3.1.6
+  resolution: "cron@npm:3.1.6"
+  dependencies:
+    "@types/luxon": ~3.3.0
+    luxon: ~3.4.0
+  checksum: e97bb6f85acf3195577c609f28bbac2e22812d8632802752a13591882deceeeeefd2c91c1293fb5102ef442f96ae17ca687854fd0b005149aae9a25834363e1d
   languageName: node
   linkType: hard
 
@@ -3935,6 +3952,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:~3.4.0":
+  version: 3.4.3
+  resolution: "luxon@npm:3.4.3"
+  checksum: 3eade81506224d038ed24035a0cd0dd4887848d7eba9361dce9ad8ef81380596a68153240be3988721f9690c624fb449fcf8fd8c3fc0681a6a8496faf48e92a3
+  languageName: node
+  linkType: hard
+
 "make-error@npm:^1.1.1":
   version: 1.3.6
   resolution: "make-error@npm:1.3.6"
@@ -4032,6 +4056,7 @@ __metadata:
     concurrently: ^8.2.1
     copy-webpack-plugin: ^11.0.0
     cors: ^2.8.5
+    cron: ^3.1.6
     eslint: ^8.40.0
     eslint-config-prettier: ^9.0.0
     eslint-plugin-import: ^2.28.1

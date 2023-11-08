@@ -3,16 +3,16 @@ export type Config = {
   labels: {
     // labels config
     prefix?: string; // The prefix to add to all labels; Defaults to "fake", set to '' to disable
-    maxPerMetric: number; // The max number of labels that can be applied to a metric
-    minPerMetric: number; // The min number of labels that will be applied to a metric
+    perMetric: number | [number /*min*/, number /*max*/]; // The number of labels to generate per metric can be a range
+    qtyForValueRotation?: number; // A number of labels that will have their values rotated on a cron schedule
+    rotationCronSchedule?: string; // A cron schedule for rotating the values of labels defaults to every 6 hours
     valueVariations: number; // How many different values a label can have
   };
   metrics: {
     // metrics config
     prefix?: string; // The prefix to add to all metrics; Defaults to "fake", set to '' to disable
     quantity: number; // How many metrics to generate
-    maxTimeSeries: number; // The max number of time series per metric name
-    minTimeSeries: number; // The min number of time series per metric name
+    timeSeries: number | [number /*min*/, number /*max*/]; // The number of time series to generate per metric can be a range
   };
   persistBetweenRuns?: boolean; // Whether to save the generated metrics and labels to a file to use on a future run
 };
@@ -20,4 +20,5 @@ export type Config = {
 export type MapsJson = {
   metrics: Array<[string, Array<{ [k: string]: string }>]>;
   labels: Array<[string, string[]]>;
+  rotationLabels: Array<[string, string[]]>;
 };
